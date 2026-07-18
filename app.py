@@ -22,8 +22,31 @@ for _i in range(1, 6):
 
 @app.get("/notes")
 def list_notes():
+    try:
+        page = int(request.args.get("page", 1))
+        per_page = int(request.args.get("per_page", 20))
+    except (TypeError, ValueError):
+        abort(400, description="page and per_page must be integers")
+
+    if page < 1:
+        abort(400, description="page must be >= 1")
+    if not (1 <= per_page <= 100):
+        abort(400, description="per_page must be between 1 and 100")
+
     all_notes = sorted(_notes.values(), key=lambda n: n["id"])
-    return jsonify({"data": all_notes})
+    total = len(all_notes)
+    start = (page - 1) * per_page
+    end = start + per_page
+    items = all_notes[start:end]
+
+    return jsonify(
+        {
+            "data": items,
+            "page": page,
+            "per_page": per_page,
+            "total": total,
+        }
+    )
 
 
 @app.post("/notes")
