@@ -13,7 +13,23 @@ python app.py
 
 ### `GET /notes`
 
-Returns all notes.
+Returns a paginated list of notes.
+
+| Query param | Default | Constraints | Description |
+|---|---|---|---|
+| `page` | `1` | `>= 1` | Page number (1-based) |
+| `per_page` | `20` | `1 – 100` | Items per page |
+
+**Response**
+
+```json
+{
+  "data": [{"id": 1, "title": "Note 1", "body": "Body of note 1."}],
+  "page": 1,
+  "per_page": 20,
+  "total": 5
+}
+```
 
 ### `POST /notes`
 
